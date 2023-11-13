@@ -9,9 +9,9 @@ helloworld.o: helloworld.o
 	aarch64-linux-gnu-as -o helloworld.o helloworld.S
 
 helloworld: helloworld.o
-	aarch64-linux-gnu-ld -o helloworld helloworld.o
+	aarch64-linux-gnu-ld -o helloworld.exe helloworld.o
 
 build: helloworld
 
-run-qemu: build
-	qemu-aarch64 helloworld
+run-qemu: clean build
+	qemu-aarch64 helloworld.exe

@@ -1,0 +1,44 @@
+square_int_:                             // @square(int)
+        sub     sp, sp, #16
+        str     w0, [sp, #12]
+        ldr     w8, [sp, #12]
+        ldr     w9, [sp, #12]
+        mul     w0, w8, w9
+        add     sp, sp, #16
+        ret
+quad_int_:                               // @quad(int)
+        sub     sp, sp, #32
+        stp     x29, x30, [sp, #16]             // 16-byte Folded Spill
+        add     x29, sp, #16
+        stur    w0, [x29, #-4]
+        ldur    w0, [x29, #-4]
+        bl      square_int_
+        str     w0, [sp, #4]                    // 4-byte Folded Spill
+        ldur    w0, [x29, #-4]
+        bl      square_int_
+        mov     w8, w0
+        ldr     w0, [sp, #4]                    // 4-byte Folded Reload
+        mul     w8, w0, w8
+        str     w8, [sp, #8]
+        ldr     w1, [sp, #8]
+        adrp    x0, .L.str
+        add     x0, x0, :lo12:.L.str
+        bl      printf
+        ldr     w0, [sp, #8]
+        ldp     x29, x30, [sp, #16]             // 16-byte Folded Reload
+        add     sp, sp, #32
+        ret
+main:                                   // @main
+        sub     sp, sp, #32
+        stp     x29, x30, [sp, #16]             // 16-byte Folded Spill
+        add     x29, sp, #16
+        stur    wzr, [x29, #-4]
+        str     w0, [sp, #8]
+        str     x1, [sp]
+        mov     w0, #5                          // =0x5
+        bl      quad_int_
+        ldp     x29, x30, [sp, #16]             // 16-byte Folded Reload
+        add     sp, sp, #32
+        ret
+.L.str:
+        .asciz  "Total is %d\n"
