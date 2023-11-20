@@ -35,7 +35,6 @@ _STRCPY:
 WRITE_SYSOUT:
   // return address protection-> lr
   paciasp
-
   // Store the Link Register (x30 == lr) and frame pointer (x29 == fp)
   // on to the stack
   stp     fp, lr, [sp,#-16]!
